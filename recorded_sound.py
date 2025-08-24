@@ -58,3 +58,4 @@ with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype='int16',
             partial = json.loads(rec.PartialResult())
             if partial.get("partial"):
                 print("...промежуточно:", partial["partial"])
+
