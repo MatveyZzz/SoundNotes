@@ -9,10 +9,8 @@ import org.bytedeco.javacpp.avcodec.*
 import org.bytedeco.javacpp.swresample.*
 import org.bytedeco.javacpp.vosk.*
 
-// === 1. Path to the model ===
 val MODEL_PATH = "vosk-model-small-ru-0.22"
 
-// === 2. Check model folder ===
 if (!File(MODEL_PATH).exists()) {
     println("❌ Model folder not found: $MODEL_PATH")
     System.exit(1)
@@ -27,31 +25,25 @@ if (missing.isNotEmpty()) {
 
 println("✅ Model found, loading...")
 
-// === 3. Load the model ===
 val model = Model(MODEL_PATH)
 val rec = KaldiRecognizer(model, 16000)
 
-// Queue for sound
 val q = ArrayBlockingQueue<ByteArray>(10)
 
-// === 4. Function to save text to a file ===
 fun saveText(text: String, filename: String = "recognized.txt") {
-    /** Saves the recognized text to a file */
     try {
         FileWriter(filename, true).use { writer ->
-            writer.write("$text\n") // add a new line
+            writer.write("$text\n")
         }
     } catch (e: IOException) {
         e.printStackTrace()
     }
 }
 
-// === 5. Callback for microphone ===
 fun callback(indata: ByteArray) {
     q.put(indata)
 }
 
-// === 6. Main loop ===
 val inputStream = RawInputStream(16000, 8000, AV_SAMPLE_FMT_S16, 1, ::callback)
 inputStream.start()
 println("🎤 Speak something... (Ctrl+C to exit)")
